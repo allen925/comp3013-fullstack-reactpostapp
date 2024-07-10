@@ -1,6 +1,8 @@
 import { Container, Group, Anchor } from '@mantine/core';
 import { MantineLogo } from '@mantinex/mantine-logo';
-import classes from  './Footer.module.css';
+import classes from './Footer.module.css';
+import { useNavigate } from "react-router-dom";
+import Logo from "../../assets/Logo"
 
 const links = [
   { link: '#', label: 'Contact' },
@@ -9,7 +11,9 @@ const links = [
   { link: '#', label: 'Careers' },
 ];
 
-const Footer = () => {
+const Footer = ({ isHomePage }) => {
+  const navigate = useNavigate();
+  const footerClass = isHomePage ? `${classes.footer} ${classes.noMarginT}` : `${classes.footer}`;
   const items = links.map((link) => (
     <a
       c="dimmed"
@@ -23,9 +27,9 @@ const Footer = () => {
   ));
 
   return (
-    <div className={classes.footer}>
+    <div className={footerClass}>
       <Container className={classes.inner}>
-        <MantineLogo size={28} />
+        <Logo size={34} onClick={() => { navigate("/") }} style={{ cursor: "pointer" }} />
         <Group className={classes.links}>{items}</Group>
       </Container>
     </div>

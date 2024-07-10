@@ -36,7 +36,7 @@ app.post("/api/user/validation", (req, res) => {
   try {
     const authHeader = req.headers.authorization;
     const token = parseToken(authHeader, res);
-    const decodedUser = jwt.verify(token, "secret");
+    const decodedUser = jwt.verify(token, "thechangedsecretaskedfor");
     const user = findUserById((decodedUser as IDecodedUser).id);
     res.json({ result: { user, token } });
   } catch (error) {

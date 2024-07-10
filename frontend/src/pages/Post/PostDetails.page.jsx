@@ -16,7 +16,7 @@ function PostDetailsPage() {
           <Link to="/posts" style={{ color: "#2db0da", fontWeight: "600" }}>Back to Posts</Link>
         </Button>
         <Button mt="lg" variant="light" color="blue">
-          <Link to={{pathname:`/posts/${post.post.id}/edit`}} state={post.post} style={{ color: "#228BE6", fontWeight: "600" }}>Edit</Link>
+          <Link to={{ pathname: `/posts/${post.post.id}/edit` }} state={post.post} style={{ color: "#228BE6", fontWeight: "600" }}>Edit</Link>
         </Button>
       </div>
       <Card padding="lg" className={`${classes.card} ${classes.parent} ${classes.clean}`}>
@@ -46,6 +46,8 @@ function PostDetailsPage() {
             src={post.post.image}
             alt={post.post.title}
             height="auto"
+            width="auto"
+            style={{maxHeight:"500px"}}
           />
         </Card.Section>
       </Card>
