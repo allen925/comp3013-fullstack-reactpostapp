@@ -1,11 +1,13 @@
 import DOMAIN from "../../services/endpoint";
 import axios from "axios";
 import { ArticleCardImage } from "../../components/misc/ArticleCardImage";
-import { SimpleGrid, Container, Text } from "@mantine/core";
-import { useLoaderData } from "react-router-dom";
+import { SimpleGrid, Container, Text, Loader } from "@mantine/core";
+import { defer, Await, useLoaderData } from "react-router-dom";
+import { Suspense } from "react";
 
 export const PostPage = () => {
-  const posts = useLoaderData();
+  const data = useLoaderData();
+
   return (
     <Container>
       <Text
@@ -16,17 +18,30 @@ export const PostPage = () => {
       >
         Posts
       </Text>
-      <SimpleGrid cols={3}>
-        {posts?.map((post) => (
-          <ArticleCardImage key={post.title} {...post} />
-        ))}
-      </SimpleGrid>
+
+      <Suspense fallback={
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <Loader color="blue" type="dots" />
+        </div>
+      }>
+        <Await resolve={data.posts} errorElement={<p>Error loading posts!</p>}>
+          {(posts) => (
+            <SimpleGrid cols={3}>
+              {posts?.map((post) => (
+                <ArticleCardImage key={post.title} {...post} />
+              ))}
+            </SimpleGrid>
+          )}
+        </Await>
+      </Suspense>
     </Container>
   );
 };
 
 export const postsLoader = async () => {
-  const res = await axios.get(`${DOMAIN}/api/posts`);
-  console.log("I ran!");
-  return res.data;
+  // Start fetching the posts but do not await here
+  const postsPromise = axios.get(`${DOMAIN}/api/posts`).then(res => res.data);
+
+  // Use defer to manage the promise
+  return defer({ posts: postsPromise });
 };

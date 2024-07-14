@@ -44,7 +44,7 @@ function PostDetailsPage() {
         <Card.Section gap={5} className={`${classes.div5} `} style={{ boxSizing: "border-box", padding: "0 30px" }} >
           <Image
             src={post.post.image}
-            alt={post.post.title}
+            alt={` Image with title: ${post.post.title}`}
             height="auto"
             width="auto"
             style={{maxHeight:"500px"}}

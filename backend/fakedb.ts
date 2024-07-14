@@ -64,14 +64,14 @@ export const findPostById = (id: number) => {
 export const updatePost = (id: number, newContents: {
   title: string;
   category: string;
-  imageLink: string;
+  image: string;
   content: string;
 }) => {
   const post = posts.find((post) => post.id === id)
   if (!post) throw new Error("Post not found");
   post.title = newContents.title;
   post.category = newContents.category;
-  post.image = newContents.imageLink;
+  post.image = newContents.image;
   post.content = newContents.content;
   return post
 }
