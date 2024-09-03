@@ -1,5 +1,4 @@
 import { Container, Group, Anchor } from '@mantine/core';
-import { MantineLogo } from '@mantinex/mantine-logo';
 import classes from './Footer.module.css';
 import { useNavigate } from "react-router-dom";
 import Logo from "../../assets/Logo"

@@ -4,13 +4,11 @@ import useBoundStore from "../../store/Store";
 import {
   TextInput,
   PasswordInput,
-  Checkbox,
   Anchor,
   Paper,
   Title,
   Text,
   Container,
-  Group,
   Button,
 } from '@mantine/core';
 import classes from './Login.module.css';
@@ -49,12 +47,12 @@ const LoginPage = () => {
       <Paper component="form" onSubmit={onLogin} withBorder shadow="md" p={30} mt={30} radius="md">
         <TextInput label="Email" name="email" placeholder="you@mantine.dev" required />
         <PasswordInput label="Password" name="password" placeholder="Your password" required mt="md" />
-        <Group justify="space-between" mt="lg">
+        {/* <Group justify="space-between" mt="lg">
           <Checkbox label="Remember me" />
           <Anchor component="button" size="sm">
             Forgot password?
           </Anchor>
-        </Group>
+        </Group> */}
         <Button type="submit" fullWidth mt="xl" >
           Sign in
         </Button>

@@ -1,6 +1,5 @@
 import useBoundStore from "../../store/Store";
 import classes from "./Navbar.module.css";
-import { useState, useEffect } from "react";
 import React from "react";
 import { DrawerContext } from "../../Contexts/drawerContext";
 import { NavLink } from "react-router-dom";
@@ -16,23 +15,22 @@ export default () => {
 
   const items = !user
     ? [
-        <NavLink onClick={handleClick} className={classes.link} end to="/">
-          Home
-        </NavLink>,
-        <NavLink onClick={handleClick} className={classes.link} to="/login">
-          Login
-        </NavLink>,
-      ]
+        { path: "/", label: "Home" },
+        { path: "/login", label: "Login" }
+      ].map((link, index) => (
+        <NavLink key={index} onClick={handleClick} className={classes.link} end to={link.path}>
+          {link.label}
+        </NavLink>
+      ))
     : [
-        <NavLink onClick={handleClick} className={classes.link} end to="/posts">
-          Posts
-        </NavLink>,
-        <NavLink onClick={handleClick} end to="/posts/create">
-          Create
-        </NavLink>,
-        <NavLink onClick={() => handleClick(logoutService)} to="/">
-          Logout
-        </NavLink>,
-      ];
+        { path: "/posts", label: "Posts" },
+        { path: "/posts/create", label: "Create" },
+        { path: "/", label: "Logout", action: logoutService }
+      ].map((link, index) => (
+        <NavLink key={index} onClick={() => handleClick(link.action)} className={classes.link} end to={link.path}>
+          {link.label}
+        </NavLink>
+      ));
+
   return [items];
 };

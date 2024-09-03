@@ -1,7 +1,7 @@
 import { Overlay, Container, Title, Button, Text } from '@mantine/core';
 import classes from './Landing.module.css';
 import { Grid, Skeleton } from '@mantine/core';
-import { SimpleGrid, Image, rem } from '@mantine/core';
+import { SimpleGrid, Image } from '@mantine/core';
 import { IconNavigationHeart, IconBrandCashapp, IconMessages } from '@tabler/icons-react';
 import { useNavigate } from "react-router-dom";
 import postsImage from '../../assets/posts.png';

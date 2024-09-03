@@ -20,8 +20,11 @@ export const PostPage = () => {
       </Text>
 
       <Suspense fallback={
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
           <Loader color="blue" type="dots" />
+          <Text size="md" align="center" style={{ marginTop: 10 }}>
+            Loading posts... (showcase network delay)
+          </Text>
         </div>
       }>
         <Await resolve={data.posts} errorElement={<p>Error loading posts!</p>}>

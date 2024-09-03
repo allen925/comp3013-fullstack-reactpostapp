@@ -5,19 +5,22 @@ import { Button, Container } from "@mantine/core";
 import { useLoaderData } from "react-router-dom";
 import { Card, Image, Text } from '@mantine/core';
 import classes from './PostDetails.module.css';
+import useBoundStore from "../../store/Store";
 
 function PostDetailsPage() {
+  const { user } = useBoundStore((state) => state);
   const post = useLoaderData();
-  console.log(post)
   return (
     <Container>
-      <div style={{ width: "100%", display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
+      <div className={classes["btn-container"]}>
         <Button mt="lg" variant="light" color="blue">
           <Link to="/posts" style={{ color: "#2db0da", fontWeight: "600" }}>Back to Posts</Link>
         </Button>
-        <Button mt="lg" variant="light" color="blue">
-          <Link to={{ pathname: `/posts/${post.post.id}/edit` }} state={post.post} style={{ color: "#228BE6", fontWeight: "600" }}>Edit</Link>
-        </Button>
+        {
+          user.id === post.post.userId && <Button mt="lg" variant="light" color="blue">
+            <Link to={{ pathname: `/posts/${post.post.id}/edit` }} state={post.post} style={{ color: "#228BE6", fontWeight: "600" }}>Edit</Link>
+          </Button>
+        }
       </div>
       <Card padding="lg" className={`${classes.card} ${classes.parent} ${classes.clean}`}>
         {/* <Card.Section mt="xl"*/}
@@ -47,7 +50,7 @@ function PostDetailsPage() {
             alt={` Image with title: ${post.post.title}`}
             height="auto"
             width="auto"
-            style={{maxHeight:"500px"}}
+            style={{ maxHeight: "500px" }}
           />
         </Card.Section>
       </Card>

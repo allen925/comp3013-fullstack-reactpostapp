@@ -23,11 +23,38 @@
   .div4 { grid-area: 4 / 1 / 8 / 2; }
   .div5 { grid-area: 1 / 2 / 8 / 3; }
 
-  .clean{
+.clean{
   padding: 0 !important;
   margin: 0 !important;
-  }
-  .paragraph{
-    text-align: start;
-    text-indent: 20px;
-  }
+}
+
+.paragraph{
+  text-align: start;
+  text-indent: 20px;
+}
+
+.delete-confirm {
+  background-color: rgb(235, 235, 235);
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 1rem;
+  position-anchor: --myAnchor;
+  position: fixed;
+  inset-block-start: anchor(end);
+  inset-inline-end: anchor(self-end);
+  margin: 5px 0 0 5px;
+  max-width: 300px;
+  z-index: 20;
+}
+
+.anchor {
+  width: fit-content;
+  anchor-name: --myAnchor;
+}
+
+.btn-container{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}

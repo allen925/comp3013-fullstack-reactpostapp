@@ -87,3 +87,12 @@ export const parseToken = (authHeader: string | undefined, res: Response) => {
 export const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
+
+
+export const deletePost = (id: number) => {
+  const index = posts.findIndex(post => post.id === id);
+  if (index === -1) {
+    throw new Error("Post not found");
+  }
+  posts.splice(index, 1);
+};

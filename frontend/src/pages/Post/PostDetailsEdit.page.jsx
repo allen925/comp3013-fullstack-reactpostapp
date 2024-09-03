@@ -6,6 +6,7 @@ import classes from './PostDetails.module.css';
 import { useLocation } from 'react-router-dom';
 import { TextInput, Textarea, SimpleGrid, Group, Title, Button, Container } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { useEffect, useRef, useState } from "react";
 
 function PostDetailsEditPage() {
     const location = useLocation();
@@ -34,11 +35,58 @@ function PostDetailsEditPage() {
             navigate(-1);
         }
     }
+
+    const [isDialogOpen, setDialogOpen] = useState(false);
+
+    const deletePost = async (postId) => {
+        setDialogOpen(false);
+        const res = await axios.delete(`${DOMAIN}/api/posts/${postId}`);
+        if (res?.data.success) {
+            navigate("/posts");
+        }
+    };
+
+    const popupRef = useRef(null);
+    useEffect(() => {
+        const handleOutsideClick = (event) => {
+            if (popupRef.current && !popupRef.current.contains(event.target))
+                setDialogOpen(false);
+        };
+
+        if (isDialogOpen) {
+            document.addEventListener('click', handleOutsideClick);
+        } else {
+            document.removeEventListener('click', handleOutsideClick);
+        }
+
+        // Cleanup the event listener unmounts / closes
+        return () => {
+            document.removeEventListener('click', handleOutsideClick);
+        };
+    }, [isDialogOpen]);
+
     return (
         <Container>
-            <Button mt="lg" mb="md" variant="light" color="#2db0da" onClick={() => navigate(-1)}>
-                Back to Post
-            </Button>
+            <div className={classes["btn-container"]}>
+                <Button mt="lg" mb="md" variant="light" color="#2db0da" onClick={() => navigate(-1)}>
+                    Back to Post
+                </Button>
+                <div>
+                    <Button ref={popupRef} className={classes.anchor} mt="lg" variant="light" color="red" onClick={() => setDialogOpen(prev => !prev)}>
+                        DELETE POST
+                    </Button>
+                    {isDialogOpen && (
+                        <div className={classes["delete-confirm"]}>
+                            <p>Are you sure you want to delete this post?</p>
+                            <div className={classes["btn-container"]}>
+                                <Button color="red" onClick={() => deletePost(postContent.id)}>Confirm</Button>
+                                <Button color="gray" onClick={() => setDialogOpen(false)}>Cancel</Button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+
             <form onSubmit={form.onSubmit(updatePost)} style={{}}>
                 <Title
                     order={2}

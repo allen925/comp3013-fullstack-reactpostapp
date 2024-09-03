@@ -11,8 +11,10 @@ import {
   addPost,
   posts,
   sleep,
+  deletePost
 } from "./fakedb";
 import { Request, Response, NextFunction } from 'express';
+import { UserInfo } from "./types/express"
 
 
 // to check runtime typing of params, from https://stackoverflow.com/questions/44078205/how-to-check-the-object-type-on-runtime-in-typescript
@@ -24,23 +26,26 @@ interface PostFields {
 }
 function isValidPostFields(obj: any): obj is PostFields {
   return typeof obj === 'object' &&
-         typeof obj.title === 'string' && obj.title.trim() !== '' &&
-         typeof obj.category === 'string' && obj.category.trim() !== '' &&
-         typeof obj.content === 'string' && obj.content.trim() !== '' &&
-         typeof obj.image === 'string' && obj.image.trim() !== '';
+    typeof obj.title === 'string' && obj.title.trim() !== '' &&
+    typeof obj.category === 'string' && obj.category.trim() !== '' &&
+    typeof obj.content === 'string' && obj.content.trim() !== '' &&
+    typeof obj.image === 'string' && obj.image.trim() !== '';
 }
 
 // helpers to solve concerns mentioned in POST /api/posts
-const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
+const authenticateToken = (req: UserInfo, res: Response, next: NextFunction) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader) return res.status(401).send({ error: 'Token required' });
 
     const token = authHeader.split(' ')[1];
-    jwt.verify(token, "thechangedsecretaskedfor", (err, decoded) => {
-      if (err) return res.status(403).send({ error: 'Token is not valid or expired' });
+    const decoded = jwt.verify(token, "thechangedsecretaskedfor"); // Synchronous call
+    if (decoded && typeof decoded === 'object') {
+      req.userId = decoded.id; // Assuming your payload has an 'id'
       next();
-    });
+    } else {
+      return res.status(403).send({ error: 'Token is not valid or expired' });
+    }
   } catch (error) {
     res.status(401).json({ error });
   }
@@ -53,12 +58,12 @@ const validatePostInput = (req: Request, res: Response, next: NextFunction) => {
       content: string;
       image: string;
     } = req.body;
-    
-    if (!isValidPostFields(req.body)) 
+
+    if (!isValidPostFields(req.body))
       return res.status(400).send({ error: 'All fields must be provided and must be non-empty strings' });
-    if (!title || !category || !content || !image) 
+    if (!title || !category || !content || !image)
       return res.status(400).send({ error: 'All fields must be provided and validated with correct types' });
-    
+
     next();
   } catch (error) {
     res.status(401).json({ error });
@@ -78,6 +83,12 @@ app.post("/api/user/login", (req, res) => {
     const token = jwt.sign({ id: user.id }, "thechangedsecretaskedfor", {
       expiresIn: "2 days",
     });
+
+    res.cookie('auth_token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax"
+  });
     res.json({ result: { user, token } });
   } catch (error) {
     res.status(401).json({ error });
@@ -106,9 +117,9 @@ app.get("/api/posts", async (req, res) => {
 app.get("/api/posts/:id", (req, res) => {
   try {
     const id = req.params.id;
-    let post = findPostById(parseInt(id));
+    const post = findPostById(parseInt(id));
     const user = findUserById(post.userId);
-    let authorName = user.email.split('@')[0];
+    const authorName = user.email.split('@')[0];
     res.status(200).json({ post, authorName, success: true });
   } catch (error) {
     res.status(404).json({ error });
@@ -139,9 +150,34 @@ app.post("/api/posts/:id/edit", (req, res) => {
  *     with an empty/incorrect payload (post)
  */
 app.post("/api/posts", authenticateToken, validatePostInput, (req, res) => {
-  const incomingPost = req.body;
-  addPost(incomingPost);
-  res.status(200).json({ success: true });
+  try {
+    const incomingPost = req.body;
+    addPost(incomingPost);
+    res.status(200).json({ success: true });
+  } catch (error) {
+    res.status(404).json({ error });
+  }
 });
 
-app.listen(port, () => console.log("Server is running"));
+app.delete("/api/posts/:id", authenticateToken, (req: UserInfo, res) => {
+  try {
+    const { id } = req.params;
+    const post = findPostById(parseInt(id));
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    if (post.userId !== parseInt(id)) {
+      return res.status(403).json({ error: "Unauthorized to delete this post" });
+    }
+
+    deletePost(parseInt(id));
+    res.status(200).json({ success: true, message: "Post deleted successfully" });
+  } catch (error) {
+    res.status(401).json({ error });
+  }
+});
+
+
+
+app.listen(port, () => console.log("Server is running at port:", port));
