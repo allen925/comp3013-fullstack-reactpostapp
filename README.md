@@ -1,11 +1,4 @@
-# simple-fullstack-reactpostapp
-The Login Flow
-![login flow image in png](images/loginflow3013.png)
-
-The /posts Get flow
-![get posts info flow image in png](images/visitpostflow3013.png)
-
-# Full-Stack Photo Sharing Application
+# simple-fullstack-reactpostapp, Photo Sharing Site
 
 This project is a full-stack web application for sharing photos. It allows users to log in, create posts with image url and descriptions, and view posts shared by others. Users can also edit or delete their own posts. The application uses a React frontend with Mantine for UI components and Nodejs + Express backend for API services.
 
@@ -81,12 +74,16 @@ Posts / Gallery Page:
 
 
 Post Detail: 
+
 <img src="./images/postDetails.png" alt="note view" width="600"/>
 
+## Flows logic pasted just for reference. 
+The Login Flow
+![login flow image in png](images/loginflow3013.png)
 
-<!-- ![alt text](image.png)
-![alt text](image-1.png)
-![alt text](image-2.png) -->
+The /posts Get flow
+![get posts info flow image in png](images/visitpostflow3013.png)
+
 <br><br><br>
 side node: Its initial purpose is for
 com3013-fullstack assignment. 
